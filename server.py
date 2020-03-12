@@ -4,68 +4,54 @@ import socket
 hostname = "localhost"
 port = 7000
 
-screen = None
-turt = None
-sock = None
+t_speed = 10
+t_angle = 20
+t_size = 1
+t_color = ["yellow", "blue", "green"]
+t_ci = 0
 
-speed = 10
-degree = 20
-
-s1 = 2
-s2 = 2
-s3 = 2
-
-colors = ["yellow", "blue", "green"]
-
-screen = turtle.Screen()
-screen.title("Server")
-screen.setup(width=1024, height=768, startx=20, starty=20)
-turt = turtle.Turtle()
-turt.shape("turtle")
-
-sock = socket.socket()
-sock.bind((hostname, port))
-
-sock.listen()
-print("[Server is now receiving connections]")
-conn, addr = sock.accept()
-print("[Client connection accepted]")
-run = True
-i = 0
-while run:
-    cmsg = conn.recv(1024)
-    char = int(cmsg.decode())
-    print("char: " + str(char))
-    if char == 119:
-        turt.forward(speed)
-    elif char == 115:
-        turt.backward(speed)
-    elif char == 97:
-        turt.left(degree)
-    elif char == 100:
-        turt.right(degree)
-    elif char == 27:
-        run = False
-    elif char == 72:
-        s1 = s1 + 1
-        s2 = s2 + 1
-        s3 = s3 + 1
-        turt.turtlesize(s1, s2, s3)
-    elif char == 80:
-        s1 = s1 - 1
-        s2 = s2 - 1
-        s3 = s3 - 1
-        turt.turtlesize(s1, s2, s3)
-    elif char == 75:
-        i = i + 1
-        if i > len(colors) - 1:
-            i = 0
-        turt.color(colors[i * -1])
-    elif char == 77:
-        i = i + 1
-        if i > len(colors) - 1:
-            i = 0
-        turt.color(colors[i])
+wn = turtle.Screen()
+wn.title("turtle")
+wn.setup(width=1024, height=768, startx=20, starty=20)
+t = turtle.Turtle()
+t.shape("turtle")
+s = socket.socket()
+s.bind((hostname, port))
+s.listen()
+print("server open")
+conn, addr = s.accept()
+print("1 client found")
+while True:
+    pkt = conn.recv(1024)
+    pkt = pkt.decode()
+    if pkt == "w":
+        t.forward(t_speed)
+    elif pkt == "s":
+        t.backward(t_speed)
+    elif pkt == "a":
+        t.left(t_angle)
+    elif pkt == "d":
+        t.right(t_angle)
+    elif pkt == "<QUIT>":
+        break
+    elif pkt == "<UP>":
+        t_size = t_size + 1
+        t.turtlesize(t_size, t_size, t_size)
+    elif pkt == "<DOWN>":
+        t_size = t_size - 1
+        t.turtlesize(t_size, t_size, t_size)
+    elif pkt == "<LEFT>":
+        if t_ci - 1 < 0:
+            t_ci = 0
+        else:
+            t_ci = t_ci - 1
+        t.color(t_color[t_ci])
+    elif pkt == "<RIGHT>":
+        if t_ci + 1 > len(t_color) - 1:
+            t_ci = len(t_color) - 1
+        else:
+            t_ci = t_ci + 1
+        t.color(t_color[t_ci])
     
-sock.close()
-screen.bye()
+s.close()
+wn.bye()
