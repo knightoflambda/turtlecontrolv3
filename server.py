@@ -1,13 +1,13 @@
 import turtle
 import socket
 
-hostname = "localhost"
+hostname = "192.168.100.14"
 port = 7000
 
 t_speed = 10
 t_angle = 20
 t_size = 1
-t_color = ["yellow", "blue", "green"]
+t_color = ["yellow", "gold", "orange", "red", "maroon", "violet", "magenta", "purple", "navy", "blue", "skyblue", "cyan", "turquoise", "lightgreen", "green", "darkgreen", "chocolate", "brown", "black", "gray", "white"]
 t_ci = 0
 
 wn = turtle.Screen()
@@ -24,15 +24,17 @@ print("1 client found")
 while True:
     pkt = conn.recv(1024)
     pkt = pkt.decode()
-    if pkt == "w":
+    if pkt == "fwd":
         t.forward(t_speed)
-    elif pkt == "s":
+    elif pkt == "rev":
         t.backward(t_speed)
-    elif pkt == "a":
+    elif pkt == "lft":
         t.left(t_angle)
-    elif pkt == "d":
+    elif pkt == "rgt":
         t.right(t_angle)
     elif pkt == "<QUIT>":
+        s.close()
+        wn.bye()
         break
     elif pkt == "<UP>":
         t_size = t_size + 1
@@ -52,6 +54,3 @@ while True:
         else:
             t_ci = t_ci + 1
         t.color(t_color[t_ci])
-    
-s.close()
-wn.bye()

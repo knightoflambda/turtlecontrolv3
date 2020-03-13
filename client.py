@@ -1,33 +1,35 @@
 import socket
-import msvcrt
+import curses
 
 sock = socket.socket()
-hostname = "localhost"
+hostname = "192.168.100.14"
 port = 7000
+
+stdscr = curses.initscr()
+stdscr.nodelay(1)
 
 sock.connect((hostname, port))
 while True:
-    keycode = ord(msvcrt.getch())
-    if keycode == 119:
-        sock.send("w".encode())
-    elif keycode == 115:
-        sock.send("s".encode())
-    elif keycode == 97:
-        sock.send("a".encode())
-    elif keycode == 100:
-        sock.send("d".encode())
-    elif keycode == 224:
-        sk = ord(msvcrt.getch())
-        if sk == 72:
+    keycode = stdscr.getch()
+    if keycode != -1:
+        if keycode == 119: #w
+            sock.send("fwd".encode())
+        elif keycode == 115: #s
+            sock.send("rev".encode())
+        elif keycode == 97: #a
+            sock.send("lft".encode())
+        elif keycode == 100: #d
+            sock.send("rgt".encode())
+        elif keycode == 116: #t
             sock.send("<UP>".encode())
-        elif sk == 80:
+        elif keycode == 103: #g
             sock.send("<DOWN>".encode())
-        elif sk == 75:
+        elif keycode == 102: #f
             sock.send("<LEFT>".encode())
-        elif sk == 77:
+        elif keycode == 104: #h
             sock.send("<RIGHT>".encode())
-    elif keycode == 27:
-        sock.send("<QUIT>".encode())
-        sock.close()
-        break
+        elif keycode == 112: #p
+            sock.send("<QUIT>".encode())
+            sock.close()
+            break
         
