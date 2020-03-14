@@ -1,7 +1,8 @@
 import turtle
 import socket
+import random
 
-hostname = "192.168.100.14"
+hostname = "localhost"
 port = 7000
 
 t_speed = 10
@@ -11,8 +12,9 @@ t_color = ["yellow", "gold", "orange", "red", "maroon", "violet", "magenta", "pu
 t_ci = 0
 
 wn = turtle.Screen()
-wn.title("turtle")
+wn.title("turtle graphics")
 wn.setup(width=1024, height=768, startx=20, starty=20)
+wn.bgcolor("pink")
 t = turtle.Turtle()
 t.shape("turtle")
 s = socket.socket()
@@ -33,6 +35,7 @@ while True:
     elif pkt == "rgt":
         t.right(t_angle)
     elif pkt == "<QUIT>":
+        t.reset()
         s.close()
         wn.bye()
         break
